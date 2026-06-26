@@ -1,0 +1,14 @@
+{
+  "name": "breadcrumbs",
+  "description": "Keeps a structured, living checkpoint of task-critical state (decisions, constraints, open TODOs) and re-injects it right after context compaction, so auto-compaction never silently drops what matters.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Mohammad Jeneidi",
+    "email": "jeneidimohammad@gmail.com"
+  },
+  "homepage": "https://github.com/Jeneidi/breadcrumbs",
+  "repository": "https://github.com/Jeneidi/breadcrumbs",
+  "license": "MIT",
+  "keywords": ["context", "compaction", "checkpoint", "hooks", "skill"],
+  "hooks": "./hooks/hooks.json"
+}

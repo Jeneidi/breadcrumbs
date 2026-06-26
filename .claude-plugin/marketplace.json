@@ -1,0 +1,13 @@
+{
+  "name": "breadcrumbs",
+  "owner": {
+    "name": "Mohammad Jeneidi"
+  },
+  "plugins": [
+    {
+      "name": "breadcrumbs",
+      "source": "./",
+      "description": "Checkpoint-based context compaction for Claude Code."
+    }
+  ]
+}

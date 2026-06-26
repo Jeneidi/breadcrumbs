@@ -1,0 +1,74 @@
+{
+  "mode": "mock",
+  "k": 8,
+  "n": 5,
+  "constraints": [
+    "the API key env var is named BREADCRUMBS_API_KEY",
+    "never touch the file legacy/do_not_edit.py",
+    "the deploy target region is eu-west-2",
+    "the database migration tool is alembic, not raw SQL",
+    "all timestamps must be stored in UTC",
+    "the staging branch is named release/staging, not develop",
+    "rate limit is capped at 50 requests per minute",
+    "the only supported Python version is 3.11"
+  ],
+  "models": {
+    "claude-haiku-4-5-20251001": {
+      "baseline_retention_rate": 0.625,
+      "treatment_retention_rate": 1.0,
+      "delta": 0.375,
+      "baseline_runs": [
+        0.625,
+        0.625,
+        0.625,
+        0.625,
+        0.625
+      ],
+      "treatment_runs": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "claude-sonnet-4-6": {
+      "baseline_retention_rate": 0.625,
+      "treatment_retention_rate": 1.0,
+      "delta": 0.375,
+      "baseline_runs": [
+        0.625,
+        0.625,
+        0.625,
+        0.625,
+        0.625
+      ],
+      "treatment_runs": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "claude-opus-4-8": {
+      "baseline_retention_rate": 0.625,
+      "treatment_retention_rate": 1.0,
+      "delta": 0.375,
+      "baseline_runs": [
+        0.625,
+        0.625,
+        0.625,
+        0.625,
+        0.625
+      ],
+      "treatment_runs": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  }
+}
