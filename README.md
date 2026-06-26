@@ -1,6 +1,21 @@
+<div align="center">
+
 # breadcrumbs
 
-A Claude Code plugin that keeps a structured checkpoint of task-critical state and re-injects it right after context compaction, so auto-compaction never silently drops decisions or constraints.
+### _Claude forgets. breadcrumbs remembers._
+
+Drop a trail through your task. When /compact eats the forest, you still know the way back.
+
+[![GitHub stars](https://img.shields.io/github/stars/Jeneidi/breadcrumbs?style=flat-square&color=111111&label=stars)](https://github.com/Jeneidi/breadcrumbs/stargazers)
+[![License: MIT](https://img.shields.io/badge/license-MIT-111111?style=flat-square)](LICENSE)
+[![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-111111?style=flat-square)](https://github.com/Jeneidi/breadcrumbs)
+[![hooks](https://img.shields.io/badge/hooks-Stop%20%C2%B7%20PreCompact%20%C2%B7%20PostCompact-111111?style=flat-square)](#how-it-works)
+
+**task-state retention: __% → __% across Haiku 4.5 · Sonnet 4.6 · Opus 4.8** · _benchmark pending real run_
+
+_Measures how much task-critical state survives a forced compaction: checkpoint-seeded context (treatment) vs. naive summary (baseline), N reps per model via the Anthropic Messages API. Numbers land here once the [benchmark](#benchmark) runs — see the honest caveat there._
+
+</div>
 
 ## The problem
 
