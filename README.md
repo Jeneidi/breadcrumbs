@@ -11,9 +11,9 @@ Drop a trail through your task. When /compact eats the forest, you still know th
 [![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-111111?style=flat-square)](https://github.com/Jeneidi/breadcrumbs)
 [![hooks](https://img.shields.io/badge/hooks-Stop%20%C2%B7%20PreCompact%20%C2%B7%20PostCompact-111111?style=flat-square)](#how-it-works)
 
-**task-state retention: __% → __% across Haiku 4.5 · Sonnet 4.6 · Opus 4.8** · _benchmark pending real run_
+**task-state retention: 33.3% → 87.5% across Haiku 4.5 · Sonnet 4.6 · Opus 4.8** · _real pilot run, N=1/cell_
 
-_Measures how much task-critical state survives a forced compaction: checkpoint-seeded context (treatment) vs. naive summary (baseline), N reps per model via the Anthropic Messages API. Numbers land here once the [benchmark](#benchmark) runs — see the honest caveat there._
+_Pilot run (N=1 per model x arm, 6 cells) measuring how much task-critical state survives a forced compaction: checkpoint-seeded context (treatment) vs. naive summary (baseline). Models were invoked via the Claude Agent SDK subagent runtime (the Agent tool's `model` parameter), NOT raw Anthropic Messages API calls — there's no `ANTHROPIC_API_KEY` in this environment. Scoring is deterministic against 8 fixed hard constraints. A full run via the existing harness (`bench/run_bench.py`) against the real Messages API, with N>1 for variance, would be a stronger follow-up. Treat this as directional pilot evidence, not definitive proof — see the honest caveats in the [benchmark](#benchmark) section._
 
 </div>
 
@@ -98,7 +98,17 @@ Outputs `bench/results.json` (raw, includes top-level `"mode": "mock"|"real"`) a
 
 ### Results
 
-TBD — pending real API run
+**Real pilot run** (not mock) via the Claude Agent SDK subagent runtime — see [`bench/results.md`](bench/results.md) and [`bench/pilot_results.json`](bench/pilot_results.json) for full detail, raw model outputs, and per-constraint breakdown. N=1 per (model, arm) cell, 6 cells total, scored deterministically against 8 fixed hard constraints in a fixed payments-module scenario.
+
+| Model | Baseline % | Treatment % | Delta (pp) |
+|---|---|---|---|
+| Haiku 4.5 | 37.5 | 87.5 | +50.0 |
+| Sonnet 4.6 | 25.0 | 87.5 | +62.5 |
+| Opus 4.8 | 37.5 | 87.5 | +50.0 |
+
+Mean across the 3 models: 33.3% → 87.5% (+54.2pp).
+
+This is a pilot, not a definitive benchmark: N=1 per cell has no variance estimate, and a single completion can swing a cell by 12.5pp. The direction is consistently positive across all three models in this pilot, but the magnitude should not be over-read. Notably, even in the treatment arm, all 3 models missed constraint C8 (reading `APP_CONFIG` directly via `os.environ` inside `process_payment`) — they delegated to the existing `load_config()` helper instead, which is reasonable code but didn't satisfy the literal check. That miss is reported as-is, not smoothed over. The mock numbers that previously lived in `bench/results.md` are scripted/fake and are kept there only for reference, clearly labeled — they are not real evidence and were not used to produce any number on this page.
 
 ## Compatibility
 

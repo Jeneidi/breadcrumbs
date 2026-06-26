@@ -1,0 +1,178 @@
+{
+  "mode": "pilot-subagent",
+  "note": "Real pilot run via the Claude Agent SDK subagent runtime (Agent tool, model param set to haiku/sonnet/opus), NOT raw Anthropic Messages API calls. N=1 per cell (6 cells total: 3 models x 2 arms). Scoring is deterministic, computed by this script against the 8 fixed hard constraints below.",
+  "n_per_cell": 1,
+  "constraints": [
+    "C1: all function names in snake_case",
+    "C2: all monetary amounts use decimal.Decimal, never float",
+    "C3: datetimes must be timezone-aware UTC (datetime.now(timezone.utc))",
+    "C4: standard library only, no third-party imports",
+    "C5: type hints on all params and return",
+    "C6: docstring on every public function",
+    "C7: raised error messages prefixed with \"ERR: \"",
+    "C8: configuration read from env var APP_CONFIG via os.environ (never hardcoded/from file)"
+  ],
+  "naive_baseline_summary": "Here's a summary of our session so far:\n\nWe're building a Python payments module. So far we've implemented two functions in payments.py: validate_amount() (validates a payment amount) and load_config() (loads app configuration). The code follows good practices we discussed earlier in the conversation. The next task is to implement a process_payment() function that handles an actual payment transaction.\n",
+  "treatment_checkpoint_block": "\n\n## Checkpoint\n**Active Task:** Implement process_payment(amount, currency, account_id) in payments.py\n**Files Touched:** payments.py (validate_amount, load_config already implemented)\n**Open TODOs:** implement process_payment\n**Hard Constraints:**\n- C1: all function names in snake_case\n- C2: all monetary amounts use decimal.Decimal, never float\n- C3: datetimes must be timezone-aware UTC (datetime.now(timezone.utc))\n- C4: standard library only, no third-party imports\n- C5: type hints on all params and return\n- C6: docstring on every public function\n- C7: raised error messages prefixed with \"ERR: \"\n- C8: configuration read from env var APP_CONFIG via os.environ (never hardcoded/from file)\n",
+  "task_instruction": "Continue the session. Implement the process_payment(amount, currency, account_id) function in Python now. Output only the code.",
+  "runs": {
+    "haiku_baseline": {
+      "model": "haiku",
+      "model_label": "Haiku 4.5",
+      "arm": "baseline",
+      "rep": 1,
+      "status": "ok",
+      "raw_response": "```python\ndef process_payment(amount, currency, account_id):\n    \"\"\"\n    Process a payment transaction.\n\n    Args:\n        amount (float): The payment amount\n        currency (str): The currency code (e.g., 'USD', 'EUR')\n        account_id (str): The account identifier\n\n    Returns:\n        dict: Transaction result with status, transaction_id, and message\n    \"\"\"\n    # Validate the payment amount\n    if not validate_amount(amount):\n        return {\n            'status': 'failed',\n            'transaction_id': None,\n            'message': 'Invalid payment amount'\n        }\n\n    # Validate currency\n    valid_currencies = ['USD', 'EUR', 'GBP', 'CAD', 'AUD']\n    if currency not in valid_currencies:\n        return {\n            'status': 'failed',\n            'transaction_id': None,\n            'message': f'Unsupported currency: {currency}'\n        }\n\n    # Validate account_id\n    if not account_id or not isinstance(account_id, str):\n        return {\n            'status': 'failed',\n            'transaction_id': None,\n            'message': 'Invalid account ID'\n        }\n\n    # Load configuration\n    config = load_config()\n\n    # Generate transaction ID\n    import uuid\n    transaction_id = str(uuid.uuid4())\n\n    try:\n        # Process the payment (simulate API call)\n        # In production, this would call an actual payment gateway\n        payment_data = {\n            'amount': amount,\n            'currency': currency,\n            'account_id': account_id,\n            'transaction_id': transaction_id,\n            'timestamp': __import__('datetime').datetime.now().isoformat()\n        }\n\n        # Log the transaction\n        if config.get('debug_mode'):\n            print(f\"Processing payment: {payment_data}\")\n\n        return {\n            'status': 'success',\n            'transaction_id': transaction_id,\n            'message': f'Payment of {amount} {currency} processed successfully'\n        }\n\n    except Exception as e:\n        return {\n            'status': 'failed',\n            'transaction_id': transaction_id,\n            'message': f'Payment processing error: {str(e)}'\n        }\n```",
+      "extracted_code": "def process_payment(amount, currency, account_id):\n    \"\"\"\n    Process a payment transaction.\n\n    Args:\n        amount (float): The payment amount\n        currency (str): The currency code (e.g., 'USD', 'EUR')\n        account_id (str): The account identifier\n\n    Returns:\n        dict: Transaction result with status, transaction_id, and message\n    \"\"\"\n    # Validate the payment amount\n    if not validate_amount(amount):\n        return {\n            'status': 'failed',\n            'transaction_id': None,\n            'message': 'Invalid payment amount'\n        }\n\n    # Validate currency\n    valid_currencies = ['USD', 'EUR', 'GBP', 'CAD', 'AUD']\n    if currency not in valid_currencies:\n        return {\n            'status': 'failed',\n            'transaction_id': None,\n            'message': f'Unsupported currency: {currency}'\n        }\n\n    # Validate account_id\n    if not account_id or not isinstance(account_id, str):\n        return {\n            'status': 'failed',\n            'transaction_id': None,\n            'message': 'Invalid account ID'\n        }\n\n    # Load configuration\n    config = load_config()\n\n    # Generate transaction ID\n    import uuid\n    transaction_id = str(uuid.uuid4())\n\n    try:\n        # Process the payment (simulate API call)\n        # In production, this would call an actual payment gateway\n        payment_data = {\n            'amount': amount,\n            'currency': currency,\n            'account_id': account_id,\n            'transaction_id': transaction_id,\n            'timestamp': __import__('datetime').datetime.now().isoformat()\n        }\n\n        # Log the transaction\n        if config.get('debug_mode'):\n            print(f\"Processing payment: {payment_data}\")\n\n        return {\n            'status': 'success',\n            'transaction_id': transaction_id,\n            'message': f'Payment of {amount} {currency} processed successfully'\n        }\n\n    except Exception as e:\n        return {\n            'status': 'failed',\n            'transaction_id': transaction_id,\n            'message': f'Payment processing error: {str(e)}'\n        }\n",
+      "constraint_checks": {
+        "C1_snake_case": true,
+        "C2_decimal_no_float": false,
+        "C3_utc": false,
+        "C4_stdlib_only": true,
+        "C5_type_hints": false,
+        "C6_docstring": true,
+        "C7_err_prefix": false,
+        "C8_app_config_env": false
+      },
+      "score": 3,
+      "max_score": 8,
+      "retention_pct": 37.5
+    },
+    "haiku_treatment": {
+      "model": "haiku",
+      "model_label": "Haiku 4.5",
+      "arm": "treatment",
+      "rep": 1,
+      "status": "ok",
+      "raw_response": "```python\ndef process_payment(amount: Decimal, currency: str, account_id: str) -> dict:\n    \"\"\"\n    Process a payment transaction.\n\n    Args:\n        amount: Payment amount as Decimal\n        currency: Currency code (e.g., 'USD')\n        account_id: Account identifier\n\n    Returns:\n        Dictionary with transaction details including id, status, timestamp\n\n    Raises:\n        ValueError: If amount or currency invalid, or account_id missing\n    \"\"\"\n    from decimal import Decimal\n    from datetime import datetime, timezone\n    import uuid\n\n    validate_amount(amount)\n\n    if not currency or not isinstance(currency, str) or len(currency) != 3:\n        raise ValueError(\"ERR: currency must be a 3-letter code\")\n\n    if not account_id or not isinstance(account_id, str):\n        raise ValueError(\"ERR: account_id is required and must be a string\")\n\n    config = load_config()\n\n    transaction_id = str(uuid.uuid4())\n    timestamp = datetime.now(timezone.utc)\n\n    return {\n        \"id\": transaction_id,\n        \"amount\": amount,\n        \"currency\": currency,\n        \"account_id\": account_id,\n        \"status\": \"completed\",\n        \"timestamp\": timestamp.isoformat()\n    }\n```",
+      "extracted_code": "def process_payment(amount: Decimal, currency: str, account_id: str) -> dict:\n    \"\"\"\n    Process a payment transaction.\n\n    Args:\n        amount: Payment amount as Decimal\n        currency: Currency code (e.g., 'USD')\n        account_id: Account identifier\n\n    Returns:\n        Dictionary with transaction details including id, status, timestamp\n\n    Raises:\n        ValueError: If amount or currency invalid, or account_id missing\n    \"\"\"\n    from decimal import Decimal\n    from datetime import datetime, timezone\n    import uuid\n\n    validate_amount(amount)\n\n    if not currency or not isinstance(currency, str) or len(currency) != 3:\n        raise ValueError(\"ERR: currency must be a 3-letter code\")\n\n    if not account_id or not isinstance(account_id, str):\n        raise ValueError(\"ERR: account_id is required and must be a string\")\n\n    config = load_config()\n\n    transaction_id = str(uuid.uuid4())\n    timestamp = datetime.now(timezone.utc)\n\n    return {\n        \"id\": transaction_id,\n        \"amount\": amount,\n        \"currency\": currency,\n        \"account_id\": account_id,\n        \"status\": \"completed\",\n        \"timestamp\": timestamp.isoformat()\n    }\n",
+      "constraint_checks": {
+        "C1_snake_case": true,
+        "C2_decimal_no_float": true,
+        "C3_utc": true,
+        "C4_stdlib_only": true,
+        "C5_type_hints": true,
+        "C6_docstring": true,
+        "C7_err_prefix": true,
+        "C8_app_config_env": false
+      },
+      "score": 7,
+      "max_score": 8,
+      "retention_pct": 87.5
+    },
+    "sonnet_baseline": {
+      "model": "sonnet",
+      "model_label": "Sonnet 4.6",
+      "arm": "baseline",
+      "rep": 1,
+      "status": "ok",
+      "raw_response": "```python\ndef process_payment(amount, currency, account_id):\n    validate_amount(amount)\n    config = load_config()\n\n    if not account_id:\n        raise ValueError(\"account_id is required\")\n\n    supported_currencies = config.get(\"supported_currencies\", [\"USD\"])\n    if currency not in supported_currencies:\n        raise ValueError(f\"Unsupported currency: {currency}\")\n\n    return {\n        \"account_id\": account_id,\n        \"amount\": amount,\n        \"currency\": currency,\n        \"status\": \"success\",\n    }\n```",
+      "extracted_code": "def process_payment(amount, currency, account_id):\n    validate_amount(amount)\n    config = load_config()\n\n    if not account_id:\n        raise ValueError(\"account_id is required\")\n\n    supported_currencies = config.get(\"supported_currencies\", [\"USD\"])\n    if currency not in supported_currencies:\n        raise ValueError(f\"Unsupported currency: {currency}\")\n\n    return {\n        \"account_id\": account_id,\n        \"amount\": amount,\n        \"currency\": currency,\n        \"status\": \"success\",\n    }\n",
+      "constraint_checks": {
+        "C1_snake_case": true,
+        "C2_decimal_no_float": false,
+        "C3_utc": false,
+        "C4_stdlib_only": true,
+        "C5_type_hints": false,
+        "C6_docstring": false,
+        "C7_err_prefix": false,
+        "C8_app_config_env": false
+      },
+      "score": 2,
+      "max_score": 8,
+      "retention_pct": 25.0
+    },
+    "sonnet_treatment": {
+      "model": "sonnet",
+      "model_label": "Sonnet 4.6",
+      "arm": "treatment",
+      "rep": 1,
+      "status": "ok",
+      "raw_response": "```python\ndef process_payment(\n    amount: decimal.Decimal,\n    currency: str,\n    account_id: str,\n) -> dict[str, object]:\n    \"\"\"Process a payment transaction for the given account.\n\n    Args:\n        amount: The payment amount as a Decimal.\n        currency: ISO 4217 currency code (e.g. \"USD\").\n        account_id: Identifier of the account to charge.\n\n    Returns:\n        A dict describing the processed transaction, including\n        status, amount, currency, account_id, and a UTC timestamp.\n\n    Raises:\n        ValueError: If the amount is invalid or currency/account_id\n            are missing.\n    \"\"\"\n    if not isinstance(amount, decimal.Decimal):\n        raise ValueError(\"ERR: amount must be a decimal.Decimal\")\n    if not currency or not isinstance(currency, str):\n        raise ValueError(\"ERR: currency must be a non-empty string\")\n    if not account_id or not isinstance(account_id, str):\n        raise ValueError(\"ERR: account_id must be a non-empty string\")\n\n    validate_amount(amount)\n    load_config()\n\n    return {\n        \"status\": \"processed\",\n        \"amount\": amount,\n        \"currency\": currency.upper(),\n        \"account_id\": account_id,\n        \"processed_at\": datetime.now(timezone.utc),\n    }\n```",
+      "extracted_code": "def process_payment(\n    amount: decimal.Decimal,\n    currency: str,\n    account_id: str,\n) -> dict[str, object]:\n    \"\"\"Process a payment transaction for the given account.\n\n    Args:\n        amount: The payment amount as a Decimal.\n        currency: ISO 4217 currency code (e.g. \"USD\").\n        account_id: Identifier of the account to charge.\n\n    Returns:\n        A dict describing the processed transaction, including\n        status, amount, currency, account_id, and a UTC timestamp.\n\n    Raises:\n        ValueError: If the amount is invalid or currency/account_id\n            are missing.\n    \"\"\"\n    if not isinstance(amount, decimal.Decimal):\n        raise ValueError(\"ERR: amount must be a decimal.Decimal\")\n    if not currency or not isinstance(currency, str):\n        raise ValueError(\"ERR: currency must be a non-empty string\")\n    if not account_id or not isinstance(account_id, str):\n        raise ValueError(\"ERR: account_id must be a non-empty string\")\n\n    validate_amount(amount)\n    load_config()\n\n    return {\n        \"status\": \"processed\",\n        \"amount\": amount,\n        \"currency\": currency.upper(),\n        \"account_id\": account_id,\n        \"processed_at\": datetime.now(timezone.utc),\n    }\n",
+      "constraint_checks": {
+        "C1_snake_case": true,
+        "C2_decimal_no_float": true,
+        "C3_utc": true,
+        "C4_stdlib_only": true,
+        "C5_type_hints": true,
+        "C6_docstring": true,
+        "C7_err_prefix": true,
+        "C8_app_config_env": false
+      },
+      "score": 7,
+      "max_score": 8,
+      "retention_pct": 87.5
+    },
+    "opus_baseline": {
+      "model": "opus",
+      "model_label": "Opus 4.8",
+      "arm": "baseline",
+      "rep": 1,
+      "status": "ok",
+      "raw_response": "The instruction says no tools, no files, plain text only, single Python code block. I'll follow it directly.\n\n```python\ndef process_payment(amount, currency, account_id):\n    \"\"\"Process a payment transaction.\n\n    Validates the amount, then attempts to charge the given account.\n    Returns a result dict; never raises on a declined/failed charge.\n    \"\"\"\n    validate_amount(amount)  # raises on invalid amount\n\n    if not currency or not isinstance(currency, str):\n        raise ValueError(\"currency must be a non-empty string\")\n    currency = currency.upper()\n\n    if not account_id:\n        raise ValueError(\"account_id is required\")\n\n    config = load_config()\n\n    try:\n        result = _charge(\n            amount=amount,\n            currency=currency,\n            account_id=account_id,\n            api_key=config[\"api_key\"],\n            endpoint=config[\"payment_endpoint\"],\n        )\n    except Exception as exc:\n        return {\n            \"status\": \"error\",\n            \"account_id\": account_id,\n            \"amount\": amount,\n            \"currency\": currency,\n            \"error\": str(exc),\n        }\n\n    return {\n        \"status\": \"succeeded\" if result.get(\"approved\") else \"declined\",\n        \"transaction_id\": result.get(\"transaction_id\"),\n        \"account_id\": account_id,\n        \"amount\": amount,\n        \"currency\": currency,\n    }\n```",
+      "extracted_code": "def process_payment(amount, currency, account_id):\n    \"\"\"Process a payment transaction.\n\n    Validates the amount, then attempts to charge the given account.\n    Returns a result dict; never raises on a declined/failed charge.\n    \"\"\"\n    validate_amount(amount)  # raises on invalid amount\n\n    if not currency or not isinstance(currency, str):\n        raise ValueError(\"currency must be a non-empty string\")\n    currency = currency.upper()\n\n    if not account_id:\n        raise ValueError(\"account_id is required\")\n\n    config = load_config()\n\n    try:\n        result = _charge(\n            amount=amount,\n            currency=currency,\n            account_id=account_id,\n            api_key=config[\"api_key\"],\n            endpoint=config[\"payment_endpoint\"],\n        )\n    except Exception as exc:\n        return {\n            \"status\": \"error\",\n            \"account_id\": account_id,\n            \"amount\": amount,\n            \"currency\": currency,\n            \"error\": str(exc),\n        }\n\n    return {\n        \"status\": \"succeeded\" if result.get(\"approved\") else \"declined\",\n        \"transaction_id\": result.get(\"transaction_id\"),\n        \"account_id\": account_id,\n        \"amount\": amount,\n        \"currency\": currency,\n    }\n",
+      "constraint_checks": {
+        "C1_snake_case": true,
+        "C2_decimal_no_float": false,
+        "C3_utc": false,
+        "C4_stdlib_only": true,
+        "C5_type_hints": false,
+        "C6_docstring": true,
+        "C7_err_prefix": false,
+        "C8_app_config_env": false
+      },
+      "score": 3,
+      "max_score": 8,
+      "retention_pct": 37.5
+    },
+    "opus_treatment": {
+      "model": "opus",
+      "model_label": "Opus 4.8",
+      "arm": "treatment",
+      "rep": 1,
+      "status": "ok",
+      "raw_response": "The user's instruction is explicit: no tools, no files, plain text only, single Python code block. This is a direct constraint that overrides the orchestration delegation policy for this specific response. I'll provide the implementation directly.\n\n```python\nimport os\nimport json\nimport uuid\nfrom decimal import Decimal\nfrom datetime import datetime, timezone\nfrom typing import Any\n\n\ndef process_payment(amount: Decimal, currency: str, account_id: str) -> dict[str, Any]:\n    \"\"\"Process a payment transaction and return a receipt.\n\n    Validates the amount, reads configuration from the APP_CONFIG environment\n    variable, and returns a receipt describing the processed transaction.\n\n    Args:\n        amount: The payment amount as a Decimal.\n        currency: The ISO currency code (e.g. \"USD\").\n        account_id: The identifier of the account being charged.\n\n    Returns:\n        A dict receipt containing the transaction id, amount, currency,\n        account id, status, and a timezone-aware UTC timestamp.\n\n    Raises:\n        ValueError: If the amount, currency, or account_id is invalid.\n    \"\"\"\n    validate_amount(amount)\n\n    if not isinstance(currency, str) or len(currency) != 3 or not currency.isalpha():\n        raise ValueError(\"ERR: currency must be a 3-letter ISO code\")\n    if not account_id or not isinstance(account_id, str):\n        raise ValueError(\"ERR: account_id must be a non-empty string\")\n\n    config = load_config()\n    allowed = config.get(\"allowed_currencies\")\n    if allowed is not None and currency.upper() not in allowed:\n        raise ValueError(f\"ERR: currency {currency.upper()} is not supported\")\n\n    return {\n        \"transaction_id\": str(uuid.uuid4()),\n        \"account_id\": account_id,\n        \"amount\": str(amount),\n        \"currency\": currency.upper(),\n        \"status\": \"processed\",\n        \"timestamp\": datetime.now(timezone.utc).isoformat(),\n    }\n```",
+      "extracted_code": "import os\nimport json\nimport uuid\nfrom decimal import Decimal\nfrom datetime import datetime, timezone\nfrom typing import Any\n\n\ndef process_payment(amount: Decimal, currency: str, account_id: str) -> dict[str, Any]:\n    \"\"\"Process a payment transaction and return a receipt.\n\n    Validates the amount, reads configuration from the APP_CONFIG environment\n    variable, and returns a receipt describing the processed transaction.\n\n    Args:\n        amount: The payment amount as a Decimal.\n        currency: The ISO currency code (e.g. \"USD\").\n        account_id: The identifier of the account being charged.\n\n    Returns:\n        A dict receipt containing the transaction id, amount, currency,\n        account id, status, and a timezone-aware UTC timestamp.\n\n    Raises:\n        ValueError: If the amount, currency, or account_id is invalid.\n    \"\"\"\n    validate_amount(amount)\n\n    if not isinstance(currency, str) or len(currency) != 3 or not currency.isalpha():\n        raise ValueError(\"ERR: currency must be a 3-letter ISO code\")\n    if not account_id or not isinstance(account_id, str):\n        raise ValueError(\"ERR: account_id must be a non-empty string\")\n\n    config = load_config()\n    allowed = config.get(\"allowed_currencies\")\n    if allowed is not None and currency.upper() not in allowed:\n        raise ValueError(f\"ERR: currency {currency.upper()} is not supported\")\n\n    return {\n        \"transaction_id\": str(uuid.uuid4()),\n        \"account_id\": account_id,\n        \"amount\": str(amount),\n        \"currency\": currency.upper(),\n        \"status\": \"processed\",\n        \"timestamp\": datetime.now(timezone.utc).isoformat(),\n    }\n",
+      "constraint_checks": {
+        "C1_snake_case": true,
+        "C2_decimal_no_float": true,
+        "C3_utc": true,
+        "C4_stdlib_only": true,
+        "C5_type_hints": true,
+        "C6_docstring": true,
+        "C7_err_prefix": true,
+        "C8_app_config_env": false
+      },
+      "score": 7,
+      "max_score": 8,
+      "retention_pct": 87.5
+    }
+  },
+  "model_aggregates": {
+    "haiku": {
+      "model_label": "Haiku 4.5",
+      "mean_baseline_pct": 37.5,
+      "mean_treatment_pct": 87.5,
+      "delta_pp": 50.0
+    },
+    "sonnet": {
+      "model_label": "Sonnet 4.6",
+      "mean_baseline_pct": 25.0,
+      "mean_treatment_pct": 87.5,
+      "delta_pp": 62.5
+    },
+    "opus": {
+      "model_label": "Opus 4.8",
+      "mean_baseline_pct": 37.5,
+      "mean_treatment_pct": 87.5,
+      "delta_pp": 50.0
+    }
+  },
+  "failed_cells": [],
+  "overall": {
+    "mean_baseline_pct": 33.3,
+    "mean_treatment_pct": 87.5,
+    "delta_pp": 54.2
+  }
+}
